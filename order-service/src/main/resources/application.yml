@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: order-service
+  r2dbc:
+    url: r2dbc:h2:mem:///orderdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+  kafka:
+    bootstrap-servers: kafka:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+order-service:
+  kafka:
+    topic: order-events
+
+logging:
+  level:
+    root: INFO
+    com.strk: DEBUG
+    org.springframework.r2dbc: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
