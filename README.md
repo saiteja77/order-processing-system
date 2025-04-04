@@ -70,13 +70,12 @@ The application implements comprehensive error handling:
 
 ### Steps
 
-1. Build and start the services:
-
-```bash
-docker-compose up --build
-```
-
-2. Services will be available at:
+1. Clone the repository
+2. Build and start the services:
+    ```bash
+    docker-compose up --build
+    ```
+3. Services will be available at:
     - Order Service: http://localhost:8080
     - Notification Service: http://localhost:8081
 
@@ -85,10 +84,9 @@ docker-compose up --build
 The application includes comprehensive unit tests for controllers and services.
 
 To run the tests, got to the root project folder order-processing-system and run the command:
-
-```bash
-./gradlew test
-```
+    ```bash
+    ./gradlew test
+    ```
 
 ## Monitoring
 
