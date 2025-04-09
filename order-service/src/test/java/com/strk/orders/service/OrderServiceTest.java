@@ -111,7 +111,7 @@ public class OrderServiceTest {
     void updateOrder_Success() {
         // Given
         when(orderRepository.findById(orderId)).thenReturn(Mono.just(order));
-        when(orderRepository.save(any(Order.class))).thenReturn(Mono.just(order));
+        when(orderRepository.update(any(Order.class))).thenReturn(Mono.just(1));
         when(kafkaProducerService.sendOrderEvent(any(OrderEvent.class)))
                 .thenReturn(Mono.just(createMock(SenderResult.class)));
 
