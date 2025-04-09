@@ -89,20 +89,20 @@ public class OrderService {
                     existingOrder.setDescription(orderRequest.getDescription());
                     existingOrder.setUpdatedAt(LocalDateTime.now());
 
-                    return orderRepository.save(existingOrder)
-                            .flatMap(updatedOrder -> {
-                                OrderEvent orderEvent = buildOrderEvent(updatedOrder, OrderEvent.EventType.UPDATED);
+                    return orderRepository.update(existingOrder)
+                            .flatMap(numOfOrdersUpdated -> {
+                                OrderEvent orderEvent = buildOrderEvent(existingOrder, OrderEvent.EventType.UPDATED);
 
                                 return kafkaProducerService.sendOrderEvent(orderEvent)
                                         .retryWhen(Retry.backoff(3, Duration.ofMillis(500))
                                                 .doBeforeRetry(retrySignal ->
                                                         log.warn("Retrying Kafka send for order update {}, attempt {}",
-                                                                updatedOrder.getId(), retrySignal.totalRetries() + 1)))
+                                                                existingOrder.getId(), retrySignal.totalRetries() + 1)))
                                         .onErrorResume(e -> {
                                             log.error("Failed to send order update event to Kafka after retries: {}", e.getMessage());
                                             return Mono.empty();
                                         })
-                                        .thenReturn(updatedOrder);
+                                        .thenReturn(existingOrder);
                             });
                 })
                 .map(OrderResponse::fromOrder);
